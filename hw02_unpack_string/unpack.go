@@ -25,9 +25,9 @@ func Unpack(str string) (string, error) {
 	return "", ErrInvalidString
 }
 
-func processSymbol(index int, r1 rune, next rune, builder *strings.Builder, len int) error {
+func processSymbol(index int, r1 rune, next rune, builder *strings.Builder, penultLen int) error {
 	if index == 0 {
-		if isDigit(r1) == true {
+		if isDigit(r1) {
 			return ErrInvalidString
 		}
 	}
@@ -38,13 +38,12 @@ func processSymbol(index int, r1 rune, next rune, builder *strings.Builder, len 
 		} else {
 			builder.WriteString(string(r1))
 		}
-
 	} else {
 		if isDigit(next) {
 			return ErrInvalidString
 		}
 	}
-	if index == len-1 && unicode.IsLetter(next) {
+	if index == penultLen-1 && unicode.IsLetter(next) {
 		builder.WriteString(string(next))
 	}
 	return nil
