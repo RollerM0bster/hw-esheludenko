@@ -17,6 +17,7 @@ func TestUnpack(t *testing.T) {
 		{input: "abccd", expected: "abccd"},
 		{input: "", expected: ""},
 		{input: "aaa0b", expected: "aab"},
+		{input: "d\n5abc", expected: "d\n\n\n\n\nabc"},
 		// uncomment if task with asterisk completed
 		// {input: `qwe\4\5`, expected: `qwe45`},
 		// {input: `qwe\45`, expected: `qwe44444`},
@@ -54,6 +55,7 @@ func TestUnpackDifferentStrings(t *testing.T) {
 		{input: "3abc", expected: "invalid string"},
 		{input: "aaa10b", expected: "invalid string"},
 		{input: "abccd", expected: "abccd"},
+		{input: "d\n5abc", expected: "d\n\n\n\n\nabc"},
 	}
 	for _, tc := range differentStrings {
 		tc := tc
@@ -65,6 +67,7 @@ func TestUnpackDifferentStrings(t *testing.T) {
 			} else {
 				fmt.Println(tc.input, str)
 				require.Equal(t, tc.expected, str)
+				fmt.Println("Result: " + str)
 			}
 		})
 	}

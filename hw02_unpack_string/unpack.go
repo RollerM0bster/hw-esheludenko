@@ -14,24 +14,25 @@ func Unpack(str string) (string, error) {
 	runes := []rune(str)
 	if err != nil {
 		builder := strings.Builder{}
-		for i := 0; i < len(runes)-1; i++ {
-			processErr := processSymbol(i, runes[i], runes[i+1], &builder, len(runes)-1)
+		if len(runes) > 0 && isDigit(runes[0]) {
+			return "", ErrInvalidString
+		}
+		for i := 0; i <= len(runes)-2; i++ {
+			processErr := processSymbol(runes[i], runes[i+1], &builder)
 			if processErr != nil {
 				return "", processErr
 			}
+		}
+		if len(runes) >= 2 && (unicode.IsLetter(runes[len(runes)-1]) || unicode.IsSymbol(runes[len(runes)-1])) {
+			builder.WriteString(string(runes[len(runes)-1]))
 		}
 		return builder.String(), nil
 	}
 	return "", ErrInvalidString
 }
 
-func processSymbol(index int, r1 rune, next rune, builder *strings.Builder, penultLen int) error {
-	if index == 0 {
-		if isDigit(r1) {
-			return ErrInvalidString
-		}
-	}
-	if unicode.IsLetter(r1) {
+func processSymbol(r1 rune, next rune, builder *strings.Builder) error {
+	if unicode.IsLetter(r1) || unicode.IsControl(r1) || unicode.IsPunct(r1) {
 		if unicode.IsDigit(next) {
 			digit, _ := strconv.Atoi(string(next))
 			builder.WriteString(strings.Repeat(string(r1), digit))
@@ -42,9 +43,6 @@ func processSymbol(index int, r1 rune, next rune, builder *strings.Builder, penu
 		if isDigit(next) {
 			return ErrInvalidString
 		}
-	}
-	if index == penultLen-1 && unicode.IsLetter(next) {
-		builder.WriteString(string(next))
 	}
 	return nil
 }
