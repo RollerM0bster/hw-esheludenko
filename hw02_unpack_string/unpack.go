@@ -4,7 +4,6 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-	"unicode"
 )
 
 var ErrInvalidString = errors.New("invalid string")
@@ -23,7 +22,7 @@ func Unpack(str string) (string, error) {
 				return "", processErr
 			}
 		}
-		if len(runes) >= 2 && (unicode.IsLetter(runes[len(runes)-1]) || unicode.IsSymbol(runes[len(runes)-1])) {
+		if len(runes) >= 2 && !isDigit(runes[len(runes)-1]) {
 			builder.WriteString(string(runes[len(runes)-1]))
 		}
 		return builder.String(), nil
@@ -32,8 +31,8 @@ func Unpack(str string) (string, error) {
 }
 
 func processSymbol(r1 rune, next rune, builder *strings.Builder) error {
-	if unicode.IsLetter(r1) || unicode.IsControl(r1) || unicode.IsPunct(r1) {
-		if unicode.IsDigit(next) {
+	if !isDigit(r1) {
+		if isDigit(next) {
 			digit, _ := strconv.Atoi(string(next))
 			builder.WriteString(strings.Repeat(string(r1), digit))
 		} else {

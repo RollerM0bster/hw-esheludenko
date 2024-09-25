@@ -18,6 +18,7 @@ func TestUnpack(t *testing.T) {
 		{input: "", expected: ""},
 		{input: "aaa0b", expected: "aab"},
 		{input: "d\n5abc", expected: "d\n\n\n\n\nabc"},
+		{input: "d😃abc", expected: "d😃abc"},
 		// uncomment if task with asterisk completed
 		// {input: `qwe\4\5`, expected: `qwe45`},
 		// {input: `qwe\45`, expected: `qwe44444`},
@@ -56,6 +57,7 @@ func TestUnpackDifferentStrings(t *testing.T) {
 		{input: "aaa10b", expected: "invalid string"},
 		{input: "abccd", expected: "abccd"},
 		{input: "d\n5abc", expected: "d\n\n\n\n\nabc"},
+		{input: "d😃abc", expected: "d😃abc"},
 	}
 	for _, tc := range differentStrings {
 		tc := tc
