@@ -14,9 +14,9 @@ func Top10(str string) []string {
 	words := strings.Fields(str)
 	resMap := make(map[string]int)
 	for _, word := range words {
-		resMap[word] = resMap[word] + 1
+		resMap[word]++
 	}
-	var resList []Word
+	resList := make([]Word, 0)
 	for key, value := range resMap {
 		resList = append(resList, Word{key, value})
 	}
@@ -26,7 +26,7 @@ func Top10(str string) []string {
 		}
 		return resList[i].repeats > resList[j].repeats
 	})
-	var result []string
+	result := make([]string, 0)
 	for _, word := range resList {
 		result = append(result, word.w)
 	}
