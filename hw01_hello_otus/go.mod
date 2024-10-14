@@ -1,4 +1,4 @@
-module github.com/esheludenko/hw01_hello_otus
+module github.com/RollerM0bster/hw-esheludenko/hw01_hello_otus
 
 go 1.22
 

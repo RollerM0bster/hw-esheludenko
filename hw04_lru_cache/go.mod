@@ -1,4 +1,4 @@
-module github.com/esheludenko/hw04_lru_cache
+module github.com/RollerM0bster/hw-esheludenko/hw04_lru_cache
 
 go 1.22
 
