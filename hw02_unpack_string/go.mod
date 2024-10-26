@@ -1,4 +1,4 @@
-module github.com/RollerM0bster/hw-esheludenko/tree/hw02_unpack_string
+module github.com/RollerM0bster/hw-esheludenko/hw02_unpack_string
 
 go 1.22
 

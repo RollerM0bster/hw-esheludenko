@@ -1,4 +1,4 @@
-module github.com/RollerM0bster/hw-esheludenko/tree/hw03_frequency_analysis
+module github.com/RollerM0bster/hw-esheludenko/hw03_frequency_analysis
 
 go 1.22
 
