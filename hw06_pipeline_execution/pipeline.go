@@ -18,20 +18,20 @@ func ExecutePipeline(in In, done In, stages ...Stage) Out {
 func moveToNext(in In, done In) Out {
 	out := make(Bi)
 	go func() {
-		defer close(out) // Ensure the output channel is always closed
+		defer close(out)
 		for {
 			select {
+			case <-done:
+				return
 			case v, ok := <-in:
 				if !ok {
-					return // Input channel closed, stop processing
-				}
-				select {
-				case out <- v: // Pass value downstream
-				case <-done: // Stop processing if done signal is received
 					return
 				}
-			case <-done: // Stop processing if done signal is received
-				return
+				select {
+				case out <- v:
+				case <-done:
+					return
+				}
 			}
 		}
 	}()
