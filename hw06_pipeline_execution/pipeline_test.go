@@ -125,9 +125,8 @@ func TestMyPipelineTest(t *testing.T) {
 				}
 				data.v = data.v.(int) / data.k.(int)
 				return data
-			} else {
-				return errors.New("Received value is not an operation struct")
 			}
+			return errors.New("Received value is not an operation struct")
 		}),
 		g("Adder", func(v interface{}) interface{} {
 			if data, ok := v.(Operation); ok {
@@ -218,6 +217,5 @@ func TestAllStageStop(t *testing.T) {
 		wg.Wait()
 
 		require.Len(t, result, 0)
-
 	})
 }
