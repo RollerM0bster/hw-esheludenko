@@ -24,6 +24,9 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	if err != nil {
 		return err
 	}
+	if !fileInfo.Mode().IsRegular() {
+		return ErrUnsupportedFile
+	}
 	fileSize := fileInfo.Size()
 	if offset > fileSize {
 		return ErrOffsetExceedsFileSize
