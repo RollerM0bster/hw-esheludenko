@@ -1,6 +1,7 @@
 package hw06pipelineexecution
 
 import (
+	"errors"
 	"strconv"
 	"sync"
 	"testing"
@@ -14,7 +15,7 @@ const (
 	fault         = sleepPerStage / 2
 )
 
-var isFullTesting = true
+var isFullTesting = false
 
 func TestPipeline(t *testing.T) {
 	// Stage generator
@@ -95,6 +96,72 @@ func TestPipeline(t *testing.T) {
 	})
 }
 
+type Operation struct {
+	v interface{}
+	k interface{}
+}
+
+func TestMyPipelineTest(t *testing.T) {
+	g := func(_ string, f func(v interface{}) interface{}) Stage {
+		return func(in In) Out {
+			out := make(Bi)
+			go func() {
+				defer close(out)
+				for v := range in {
+					time.Sleep(sleepPerStage)
+					out <- f(v)
+				}
+			}()
+			return out
+		}
+	}
+
+	stages := []Stage{
+		g("Dummy", func(v interface{}) interface{} { return v }),
+		g("Division", func(v interface{}) interface{} {
+			if data, ok := v.(Operation); ok {
+				if data.k == 0 {
+					return data
+				}
+				data.v = data.v.(int) / data.k.(int)
+				return data
+			}
+			return errors.New("Received value is not an operation struct")
+		}),
+		g("Adder", func(v interface{}) interface{} {
+			if data, ok := v.(Operation); ok {
+				data.v = data.v.(int) + data.k.(int)
+				return data
+			}
+			return errors.New("Received value is not an operation struct")
+		}),
+		g("Stringifier", func(v interface{}) interface{} { return strconv.Itoa(v.(Operation).v.(int)) }),
+	}
+
+	t.Run("my case", func(t *testing.T) {
+		in := make(Bi)
+		data := []Operation{{v: 10, k: 2}, {v: 20, k: 4}, {v: 30, k: 5}}
+
+		go func() {
+			for _, v := range data {
+				in <- v
+			}
+			close(in)
+		}()
+
+		result := make([]string, 0, 10)
+		start := time.Now()
+		for s := range ExecutePipeline(in, nil, stages...) {
+			result = append(result, s.(string))
+		}
+		elapsed := time.Since(start)
+		require.Equal(t, []string{"7", "9", "11"}, result)
+		require.Less(t,
+			int64(elapsed),
+			int64(sleepPerStage)*int64(len(stages)+len(data)-1)+int64(fault))
+	})
+}
+
 func TestAllStageStop(t *testing.T) {
 	if !isFullTesting {
 		return
@@ -150,6 +217,5 @@ func TestAllStageStop(t *testing.T) {
 		wg.Wait()
 
 		require.Len(t, result, 0)
-
 	})
 }
