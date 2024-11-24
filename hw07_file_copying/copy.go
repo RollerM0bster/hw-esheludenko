@@ -22,7 +22,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	file, _ = os.Open(fromPath)
 	fileInfo, err := file.Stat()
 	if err != nil {
-		return ErrUnsupportedFile
+		return err
 	}
 	fileSize := fileInfo.Size()
 	if fileSize == 0 {
