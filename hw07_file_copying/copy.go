@@ -20,6 +20,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 		return err
 	}
 	file, _ = os.Open(fromPath)
+	defer file.Close()
 	fileInfo, err := file.Stat()
 	if err != nil {
 		return err
@@ -54,8 +55,6 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	if err != nil && !errors.Is(err, io.EOF) {
 		return err
 	}
-
-	defer file.Close()
 	return nil
 }
 
