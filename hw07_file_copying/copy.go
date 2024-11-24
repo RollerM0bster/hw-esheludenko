@@ -15,23 +15,24 @@ var (
 
 func Copy(fromPath, toPath string, offset, limit int64) error {
 	var file *os.File
-	file, err := os.Open(fromPath)
+	err := checkPaths(fromPath, toPath)
 	if err != nil {
-		if os.IsNotExist(err) {
-			return err
-		}
-		return ErrUnsupportedFile
+		return err
 	}
+	file, err = os.Open(fromPath)
 	fileInfo, err := file.Stat()
 	if err != nil {
 		return ErrUnsupportedFile
 	}
 	fileSize := fileInfo.Size()
+	if fileSize == 0 {
+		return ErrUnsupportedFile
+	}
 	if offset > fileSize {
 		return ErrOffsetExceedsFileSize
 	}
-	if limit == 0 || limit > fileSize {
-		limit = fileSize
+	if limit == 0 || limit > fileSize-offset {
+		limit = fileSize - offset
 	}
 	_, err = file.Seek(offset, io.SeekStart)
 	if err != nil {
@@ -43,16 +44,33 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	}
 	defer writeTo.Close()
 
-	progressBar := pb.New(int(limit)).Start()
+	progressBar := pb.Full.Start64(limit)
 	defer progressBar.Finish()
 
-	progressReader := progressBar.NewProxyReader(file)
+	progressReader := progressBar.NewProxyReader(io.LimitReader(file, limit))
 
-	_, err = io.CopyN(writeTo, progressReader, limit)
+	_, err = io.Copy(writeTo, progressReader)
+
 	if err != nil && !errors.Is(err, io.EOF) {
 		return err
 	}
 
 	defer file.Close()
+	return nil
+}
+
+func checkPaths(fromPath, toPath string) error {
+	src, err := os.Stat(fromPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return err
+		}
+	}
+	dst, err := os.Stat(toPath)
+	if err == nil {
+		if os.SameFile(src, dst) {
+			return errors.New("source and destination are the same")
+		}
+	}
 	return nil
 }
