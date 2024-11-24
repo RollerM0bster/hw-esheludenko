@@ -19,7 +19,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	if err != nil {
 		return err
 	}
-	file, err = os.Open(fromPath)
+	file, _ = os.Open(fromPath)
 	fileInfo, err := file.Stat()
 	if err != nil {
 		return ErrUnsupportedFile
