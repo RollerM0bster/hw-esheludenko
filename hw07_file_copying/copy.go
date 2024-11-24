@@ -11,7 +11,6 @@ import (
 var (
 	ErrUnsupportedFile       = errors.New("unsupported file")
 	ErrOffsetExceedsFileSize = errors.New("offset exceeds file size")
-	ErrFileNotExists         = errors.New("file does not exist")
 )
 
 func Copy(fromPath, toPath string, offset, limit int64) error {
@@ -19,7 +18,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	file, err := os.Open(fromPath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return ErrFileNotExists
+			return err
 		}
 		return ErrUnsupportedFile
 	}

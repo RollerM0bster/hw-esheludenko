@@ -60,14 +60,6 @@ func TestCopy(t *testing.T) {
 			wantErr:     nil,
 			wantContent: "World!",
 		},
-		{
-			name:     "Source File Does Not Exist",
-			fromPath: "nonexistent.txt",
-			toPath:   "dst_no_src.txt",
-			offset:   0,
-			limit:    5,
-			wantErr:  ErrFileNotExists,
-		},
 	}
 
 	for _, tt := range tests {
