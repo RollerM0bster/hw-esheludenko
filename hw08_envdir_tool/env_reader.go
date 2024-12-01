@@ -34,14 +34,23 @@ func ReadDir(dir string) (Environment, error) {
 			continue
 		}
 		path := filepath.Join(dir, name)
+		info, err := os.Stat(path)
+		if err != nil {
+			return nil, err
+		}
+		if info.Size() == 0 {
+			res[name] = EnvValue{Value: "", NeedRemove: true}
+		}
 		content, err := os.ReadFile(path)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error reading file %s: %s\n", name, err)
 			os.Exit(1)
 		}
-		content = bytes.ReplaceAll(content, []byte{0x00}, []byte("\n"))
-		value := strings.TrimRight(string(content), "\t\r\n")
-		res[name] = EnvValue{Value: value, NeedRemove: false}
+		lines := strings.Split(string(content), "\n")
+		firstLine := lines[0]
+		content = bytes.Replace([]byte(firstLine), []byte{0x00}, []byte("\n"), 1)
+		strVal := strings.TrimRight(string(content), " \t\r")
+		res[name] = EnvValue{Value: strVal, NeedRemove: false}
 		_, exists := os.LookupEnv(name)
 		if exists {
 			temp := res[name]

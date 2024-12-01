@@ -18,16 +18,20 @@ func TestReadDir(t *testing.T) {
 	}
 
 	expected := map[string]EnvValue{
-		"BAR":       {Value: "123", NeedRemove: false},
+		"BAR":       {Value: "123", NeedRemove: true},
 		"EMPTY":     {Value: "", NeedRemove: false},
-		"FOO":       {Value: "foo", NeedRemove: false},
+		"FOO":       {Value: "foo", NeedRemove: true},
 		"NULL_BYTE": {Value: "filestart\nfilefinish", NeedRemove: false},
 	}
 	for name, content := range testFiles {
-		err := os.WriteFile(filepath.Join(dir, name), []byte(content), 0644)
+		err := os.WriteFile(
+			filepath.Join(dir, name),
+			[]byte(content), 0644)
 		if err != nil {
 			t.Fatal(err)
 		}
+		os.Setenv("BAR", "123")
+		os.Setenv("FOO", "456")
 	}
 
 	os.Setenv("FOO", "some_env_var")
@@ -46,8 +50,8 @@ func TestReadDir(t *testing.T) {
 		if value.Value != expectedValue.Value {
 			t.Errorf("For key %s, expected value %q, got %q", key, expectedValue.Value, value.Value)
 		}
-		if key == "FOO" && !value.NeedRemove {
-			t.Errorf("Expected NeedRemove to be true for key %s, got false", key)
+		if value.NeedRemove != expectedValue.NeedRemove {
+			t.Errorf("For key %s, expected NeedRemove %v, got %v", key, expectedValue.NeedRemove, value.NeedRemove)
 		}
 	}
 	if _, exists := env["INVALID=KEY"]; exists {

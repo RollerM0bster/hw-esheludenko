@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -18,7 +19,8 @@ func RunCmd(cmd []string, env Environment) (returnCode int) {
 	command.Stderr = os.Stderr
 
 	if err := command.Run(); err != nil {
-		if exitError, ok := err.(*exec.ExitError); ok {
+		var exitError *exec.ExitError
+		if errors.As(err, &exitError) {
 			os.Exit(exitError.ExitCode())
 		}
 		fmt.Fprintf(os.Stderr, "Error running command: %v\n", err)
@@ -28,9 +30,15 @@ func RunCmd(cmd []string, env Environment) (returnCode int) {
 }
 
 func setVars(env Environment) {
-	for key, _ := range env {
+	for key := range env {
 		item := env[key]
 		if item.NeedRemove {
+			err := os.Unsetenv(key)
+			if err != nil {
+				return
+			}
+		}
+		if item.Value != "" {
 			err := os.Setenv(key, item.Value)
 			if err != nil {
 				return

@@ -13,4 +13,5 @@ func main() {
 		os.Exit(1)
 	}
 	RunCmd(args, envs)
+	os.Exit(0)
 }
