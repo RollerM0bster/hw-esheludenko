@@ -11,7 +11,7 @@ func TestRunCmd(t *testing.T) {
 	t.Run("echo", func(t *testing.T) {
 		cmd := []string{"./go-envdir", "hw08_envdir_tool/testdata/env", "echo", "123", "456"}
 		returnCode := RunCmd(cmd, env)
-		if returnCode == 0 {
+		if returnCode != 0 {
 			t.Errorf("Unexpected return code: %d", returnCode)
 		}
 	})
