@@ -6,8 +6,6 @@ import (
 	"testing"
 )
 
-type UserRole string
-
 type (
 	User struct {
 		ID     string `json:"id" validate:"len:36"`
@@ -19,12 +17,6 @@ type (
 
 	App struct {
 		Version string `validate:"len:5"`
-	}
-
-	Token struct {
-		Header    []byte
-		Payload   []byte
-		Signature []byte
 	}
 
 	Response struct {
