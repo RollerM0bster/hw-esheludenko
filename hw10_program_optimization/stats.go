@@ -2,7 +2,6 @@ package hw10programoptimization
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"regexp"
 	"strings"
@@ -23,46 +22,28 @@ type User struct {
 type DomainStat map[string]int
 
 func GetDomainStat(r io.Reader, domain string) (DomainStat, error) {
-	u, err := getUsers(r)
-	if err != nil {
-		return nil, fmt.Errorf("get users error: %w", err)
-	}
-	return countDomains(u, domain)
-}
-
-type users [100_000]User
-
-func getUsers(r io.Reader) (result users, err error) {
+	var domainRegex = regexp.MustCompile(`@.*\.` + domain)
+	result := make(DomainStat)
 	scanner := bufio.NewScanner(r)
-	idx := 0
 	for scanner.Scan() {
 		line := scanner.Bytes()
 		if len(line) == 0 {
 			continue
 		}
 		var user User
-		if err = json.Unmarshal(line, &user); err != nil {
-			return
+		if err := json.Unmarshal(line, &user); err != nil {
+			return nil, err
 		}
-		result[idx] = user
-		idx++
-	}
-	if err = scanner.Err(); err != nil {
-		return
-	}
-	return
-}
-
-func countDomains(u users, domain string) (DomainStat, error) {
-	result := make(DomainStat)
-	var domainRegex = regexp.MustCompile(`\.` + domain)
-	for _, user := range u {
-		matched := domainRegex.MatchString(user.Email)
-		if matched {
-			num := result[strings.ToLower(strings.SplitN(user.Email, "@", 2)[1])]
-			num++
-			result[strings.ToLower(strings.SplitN(user.Email, "@", 2)[1])] = num
+		if domainRegex.MatchString(user.Email) {
+			index := strings.LastIndex(user.Email, "@")
+			if index != -1 {
+				domainPart := strings.ToLower(user.Email[index+1:])
+				result[domainPart]++
+			}
 		}
+	}
+	if err := scanner.Err(); err != nil {
+		return nil, err
 	}
 	return result, nil
 }
