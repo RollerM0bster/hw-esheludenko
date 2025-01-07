@@ -36,11 +36,12 @@ func TestBadStructValidate(t *testing.T) {
 	bs := StructWithBadTag{BadField: "1"}
 	bs2 := StructWithUnsupportedField{BadField: 1.1}
 	result := Validate(bs)
-	if _, ok := result.(ValidationErrors); ok {
+	var validationErrors ValidationErrors
+	if errors.As(result, &validationErrors) {
 		t.Errorf("Expected error, got ValidationError struct")
 	}
 	result2 := Validate(bs2)
-	if _, ok := result2.(ValidationErrors); ok {
+	if errors.As(result2, &validationErrors) {
 		t.Errorf("Expected error, got ValidationError struct")
 	}
 }
