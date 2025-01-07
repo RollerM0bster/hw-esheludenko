@@ -3,7 +3,6 @@ package hw09structvalidator
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	"testing"
 )
 
@@ -37,11 +36,11 @@ func TestBadStructValidate(t *testing.T) {
 	bs := StructWithBadTag{BadField: "1"}
 	bs2 := StructWithUnsupportedField{BadField: 1.1}
 	result := Validate(bs)
-	if reflect.TypeOf(result) == reflect.TypeOf(&ValidationError{}) {
+	if _, ok := result.(ValidationErrors); ok {
 		t.Errorf("Expected error, got ValidationError struct")
 	}
 	result2 := Validate(bs2)
-	if reflect.TypeOf(result2) == reflect.TypeOf(&ValidationError{}) {
+	if _, ok := result2.(ValidationErrors); ok {
 		t.Errorf("Expected error, got ValidationError struct")
 	}
 }
