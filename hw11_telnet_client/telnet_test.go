@@ -63,3 +63,24 @@ func TestTelnetClient(t *testing.T) {
 		wg.Wait()
 	})
 }
+
+func TestTelnetClient_Connect(t *testing.T) {
+	l, err := net.Listen("tcp", "127.0.0.1:")
+	require.NoError(t, err)
+	defer l.Close()
+	go func() {
+		for {
+			conn, err := l.Accept()
+			require.NoError(t, err)
+			_ = conn.Close()
+		}
+	}()
+	addr := l.Addr().String()
+	client := NewTelnetClient(addr, time.Second*2, io.NopCloser(nil), io.Discard)
+	err = client.Connect()
+	require.NoError(t, err)
+	defer client.Close()
+	if client.(*telnetClient).conn == nil {
+		t.Fatalf("Expected connection to be initialized, but got nil")
+	}
+}
