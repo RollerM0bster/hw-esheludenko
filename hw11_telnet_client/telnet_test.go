@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"net"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -62,4 +63,16 @@ func TestTelnetClient(t *testing.T) {
 
 		wg.Wait()
 	})
+}
+
+func TestTelnetClient_NonExistingServer(t *testing.T) {
+	addr := "127.0.0.1:0"
+	client := NewTelnetClient(addr, time.Second*2, io.NopCloser(nil), io.Discard)
+	err := client.Connect()
+	require.Error(t, err)
+	if err != nil {
+		if !strings.Contains(err.Error(), "error connecting to telnet server") {
+			t.Fatalf("Expected error connecting to telnet server, got %v", err)
+		}
+	}
 }
