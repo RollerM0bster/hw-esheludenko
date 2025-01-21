@@ -2,25 +2,26 @@ package app
 
 import (
 	"context"
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/dto"
+
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/logger"
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/storage"
 )
 
-type App struct { // TODO
+type App struct {
+	logger  *logger.Logger
+	storage storage.Storage
 }
 
-type Logger interface { // TODO
+func New(logger *logger.Logger, storage storage.Storage) *App {
+	return &App{
+		logger:  logger,
+		storage: storage,
+	}
 }
 
-type Storage interface { // TODO
+func (a *App) CreateEvent(ctx context.Context, title string) (int64, error) {
+	a.logger.Info("Creating event " + title)
+	event := dto.Event{Title: title}
+	return a.storage.CreateEvent(event)
 }
-
-func New(logger Logger, storage Storage) *App {
-	return &App{}
-}
-
-func (a *App) CreateEvent(ctx context.Context, id, title string) error {
-	// TODO
-	return nil
-	// return a.storage.CreateEvent(storage.Event{ID: id, Title: title})
-}
-
-// TODO

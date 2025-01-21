@@ -1,0 +1,15 @@
+storage_type: memory
+logging:
+  log_level: INFO
+
+db:
+  db_host: localhost
+  db_port: 5432
+  db_login: postgres
+  db_password: postgres
+  db_database: calendardb
+  db_schema: eventstorage
+
+server_config:
+  server_host: localhost
+  server_port: 8080
