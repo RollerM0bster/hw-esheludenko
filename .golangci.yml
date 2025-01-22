@@ -19,6 +19,9 @@ issues:
         - dupl
         - gocyclo
         - gosec
+  exclude-dirs:
+    - /opt/hostedtoolcache/go/
+    - ../../../../go/pkg/mod/
 
 linters:
   disable-all: true
