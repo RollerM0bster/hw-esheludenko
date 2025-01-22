@@ -1,5 +1,4 @@
 BIN := "./bin/calendar"
-DOCKER_IMG := "calendar:develop"
 
 GIT_HASH := $(shell git log --format="%h" -n 1)
 BUILD_DATE := $(shell date -u +%Y-%m-%dT%H:%M:%S)
@@ -7,6 +6,9 @@ LDFLAGS := -X main.release="develop" -X main.buildDate=$(BUILD_DATE) -X main.git
 
 .DEFAULT_GOAL := build
 
+.PHONY: all lint install-linter clean build
+
+all: lint
 # Build the binary
 build:
 	go build -v -o $(BIN) -ldflags "$(LDFLAGS)" ./cmd/calendar
@@ -15,29 +17,24 @@ build:
 run: build
 	$(BIN) -config ./configs/calendar-config.yaml
 
+
+lint: install-linter build
+	@echo "Linter launch"
+	golangci-lint run --disable exhaustivestruct ./...
+
+
+install-linter:
+	@if ! command -v $(LINTER) &> /dev/null; then \
+		echo "Установка golangci-lint..."; \
+		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOBIN) v1.51.2; \
+	else \
+		echo "golangci-lint уже установлен."; \
+	fi
+
+
 # Run tests with race detector
 test:
 	go test -v -race ./internal/storage/...
-
-
-# Run golangci-lint
-lint:
-	golangci-lint run ./...
-
-# Build Docker image
-build-img:
-	docker build \
-		--build-arg=LDFLAGS="$(LDFLAGS)" \
-		-t $(DOCKER_IMG) \
-		-f build/Dockerfile .
-
-# Run Docker image
-run-img: build-img
-	docker run $(DOCKER_IMG)
-
-# Show the version of the built binary
-version: build
-	$(BIN) version
 
 # Apply database migrations (optional)
 migrate:
@@ -45,6 +42,3 @@ migrate:
 
 # Clean up build artifacts
 clean:
-	rm -rf $(BIN)
-
-.PHONY: build run test lint build-img run-img version migrate clean install-lint-deps
