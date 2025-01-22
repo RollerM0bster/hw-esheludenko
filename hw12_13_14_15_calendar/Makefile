@@ -5,6 +5,7 @@ BUILD_DATE := $(shell date -u +%Y-%m-%dT%H:%M:%S)
 LDFLAGS := -X main.release="develop" -X main.buildDate=$(BUILD_DATE) -X main.gitHash=$(GIT_HASH)
 LINTER := golangci-lint
 LINTER-CONFIG := ../.golangci.yml
+GOBIN ?= $(shell go env GOPATH)/bin
 
 .DEFAULT_GOAL := build
 
@@ -28,7 +29,7 @@ lint: install-linter build
 install-linter:
 	@if ! command -v $(LINTER) &> /dev/null; then \
 		echo "Установка golangci-lint..."; \
-		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(BIN) v1.51.2; \
+		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOBIN) v1.51.2; \
 	else \
 		echo "golangci-lint уже установлен."; \
 	fi
@@ -44,3 +45,4 @@ migrate:
 
 # Clean up build artifacts
 clean:
+	rm -rf $(BIN)
