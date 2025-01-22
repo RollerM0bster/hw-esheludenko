@@ -8,8 +8,6 @@ linters-settings:
   funlen:
     lines: 200
     statements: 80
-  exhaustive:
-    default-signifies-exhaustive: true
 
 issues:
   exclude-rules:
@@ -20,8 +18,10 @@ issues:
         - gocyclo
         - gosec
   exclude-dirs:
-    - ^/opt/hostedtoolcache/go/
-    - ^../../../../go/pkg/mod/
+    # от ошибок линтеров на исходники golang в пайплайне github - Error: ../../../../../../opt/hostedtoolcache/go/1.23.4
+    - /opt/hostedtoolcache/go/
+    # от ошибок линтеров на исходники используемых библиотек в пайплайне github - Error: ../../../../go/pkg/mod/github.com/jackc/pgx@v3.6.2+incompatible/conn.go:1491:6: softErr declared and not used (typecheck)
+    - ../../../../go/pkg/mod/
 
 
 linters:
