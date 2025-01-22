@@ -3,6 +3,8 @@ BIN := "./bin/calendar"
 GIT_HASH := $(shell git log --format="%h" -n 1)
 BUILD_DATE := $(shell date -u +%Y-%m-%dT%H:%M:%S)
 LDFLAGS := -X main.release="develop" -X main.buildDate=$(BUILD_DATE) -X main.gitHash=$(GIT_HASH)
+LINTER := golangci-lint
+LINTER-CONFIG := ../.golangci.yml
 
 .DEFAULT_GOAL := build
 
