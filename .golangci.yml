@@ -18,9 +18,9 @@ issues:
         - gocyclo
         - gosec
     - path: /opt/hostedtoolcache/go/.*\.go
-      linters: [ ]
+      linters: [errcheck]
     - path: ../../../../go/pkg/mod/.*\.go
-      linters: [ ]
+      linters: [errcheck]
 
 
 linters:
