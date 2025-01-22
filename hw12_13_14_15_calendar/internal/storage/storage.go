@@ -12,7 +12,7 @@ type Storage interface {
 	// ChangeEvent Изменяет событие
 	ChangeEvent(id int64, dto dto.Event) error
 	// DeleteEventById Удаляет событие по идентификатору
-	DeleteEventById(id int64) error
+	DeleteEventByID(id int64) error
 	FindEventsByDay(day time.Time) ([]dto.Event, error)
 	FindEventsByWeek(day time.Time) ([]dto.Event, error)
 	FindEventsByMonth(day time.Time) ([]dto.Event, error)

@@ -8,7 +8,7 @@ import (
 
 type Config struct {
 	Logger       LoggerConf   `mapstructure:"logging"`
-	Db           DBConfig     `mapstructure:"db"`
+	DB           DBConfig     `mapstructure:"db"`
 	StorageType  string       `mapstructure:"storage_type"`
 	ServerConfig ServerConfig `mapstructure:"server_config"`
 }

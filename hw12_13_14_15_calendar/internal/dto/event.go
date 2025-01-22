@@ -8,6 +8,6 @@ type Event struct {
 	Start                  time.Time
 	End                    time.Time
 	Description            string
-	OwnerId                int64
+	OwnerID                int64
 	DaysAmountBeforeNotify int8
 }

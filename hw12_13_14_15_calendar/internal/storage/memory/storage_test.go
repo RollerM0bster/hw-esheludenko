@@ -76,7 +76,7 @@ func TestStorage_DeleteEventById(t *testing.T) {
 	}
 	id, _ := s.CreateEvent(event)
 
-	err := s.DeleteEventById(id)
+	err := s.DeleteEventByID(id)
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)
 	}
@@ -85,7 +85,7 @@ func TestStorage_DeleteEventById(t *testing.T) {
 		t.Fatalf("expected event to be deleted, but it still exists")
 	}
 
-	err = s.DeleteEventById(id)
+	err = s.DeleteEventByID(id)
 	if !errors.Is(err, memorystorage.ErrEventNotFound) {
 		t.Errorf("expected 'event not found' error, got %v", err)
 	}

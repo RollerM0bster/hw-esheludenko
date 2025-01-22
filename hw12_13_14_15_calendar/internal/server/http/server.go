@@ -33,14 +33,15 @@ func NewServer(logger *logger.Logger, app *app.App) *Server {
 func (s *Server) Start(ctx context.Context, cfg config.Config) error {
 	s.logger.Info("Starting server")
 	mux := http.NewServeMux()
-	mux.HandleFunc("/hello-world", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/hello-world", func(w http.ResponseWriter, _ *http.Request) {
 		w.Write([]byte("Hello World"))
 	})
 	handler := loggingMiddleware(mux)
 
 	s.server = &http.Server{
-		Addr:    cfg.ServerConfig.Host + ":" + cfg.ServerConfig.Port,
-		Handler: handler,
+		Addr:              cfg.ServerConfig.Host + ":" + cfg.ServerConfig.Port,
+		Handler:           handler,
+		ReadHeaderTimeout: 10 * time.Second,
 	}
 	s.wg.Add(1)
 	go func() {
@@ -54,7 +55,7 @@ func (s *Server) Start(ctx context.Context, cfg config.Config) error {
 	return s.Stop(ctx)
 }
 
-func (s *Server) Stop(ctx context.Context) error {
+func (s *Server) Stop(_ context.Context) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.stopped {

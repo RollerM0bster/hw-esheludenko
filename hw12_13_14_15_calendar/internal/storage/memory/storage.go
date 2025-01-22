@@ -11,15 +11,15 @@ import (
 var ErrEventNotFound = errors.New("event not found")
 
 type Storage struct {
-	mu     sync.RWMutex //nolint:unused
+	mu     sync.RWMutex
 	Events map[int64]dto.Event
-	nextId int64
+	nextID int64
 }
 
 func New() *Storage {
 	return &Storage{
 		Events: make(map[int64]dto.Event),
-		nextId: 1,
+		nextID: 1,
 	}
 }
 
@@ -27,8 +27,8 @@ func (s *Storage) CreateEvent(dto dto.Event) (int64, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	dto.ID = s.nextId
-	s.nextId++
+	dto.ID = s.nextID
+	s.nextID++
 	s.Events[dto.ID] = dto
 	return dto.ID, nil
 }
@@ -43,7 +43,7 @@ func (s *Storage) ChangeEvent(id int64, dto dto.Event) error {
 	return nil
 }
 
-func (s *Storage) DeleteEventById(id int64) error {
+func (s *Storage) DeleteEventByID(id int64) error {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
