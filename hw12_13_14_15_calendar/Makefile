@@ -21,7 +21,7 @@ run: build
 
 
 lint: install-linter build
-	@echo "Linter launch"
+	@echo "Запуск golangci-lint"
 	golangci-lint run --disable exhaustivestruct ./...
 
 
