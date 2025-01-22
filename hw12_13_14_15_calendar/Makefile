@@ -28,7 +28,7 @@ lint: install-linter build
 install-linter:
 	@if ! command -v $(LINTER) &> /dev/null; then \
 		echo "Установка golangci-lint..."; \
-		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOBIN) v1.51.2; \
+		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(BIN) v1.51.2; \
 	else \
 		echo "golangci-lint уже установлен."; \
 	fi
