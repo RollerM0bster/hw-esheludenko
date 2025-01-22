@@ -8,6 +8,8 @@ linters-settings:
   funlen:
     lines: 200
     statements: 80
+  exhaustive:
+    default-signifies-exhaustive: true
 
 issues:
   exclude-rules:
