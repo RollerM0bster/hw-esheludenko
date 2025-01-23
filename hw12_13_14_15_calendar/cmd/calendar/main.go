@@ -3,21 +3,26 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/app"
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/logger"
-	internalhttp "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/server/http"
-	memorystorage "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/storage/memory"
+	storage2 "github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/storage"
+
+	config2 "github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/config"
+
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/app"
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/logger"
+	internalhttp "github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/server/http"
 )
 
 var configFile string
 
 func init() {
-	flag.StringVar(&configFile, "config", "/etc/calendar/config.toml", "Path to configuration file")
+	flag.StringVar(&configFile, "config", "./configs/calendar-config.yaml", "Path to configuration file")
 }
 
 func main() {
@@ -27,35 +32,43 @@ func main() {
 		printVersion()
 		return
 	}
+	if err := run(); err != nil {
+		log.Printf("%+v", err)
+		os.Exit(1)
+	}
+}
 
-	config := NewConfig()
-	logg := logger.New(config.Logger.Level)
-
-	storage := memorystorage.New()
-	calendar := app.New(logg, storage)
-
-	server := internalhttp.NewServer(logg, calendar)
-
-	ctx, cancel := signal.NotifyContext(context.Background(),
-		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+func run() error {
+	if configFile == "" {
+		return fmt.Errorf("mssing configuration file")
+	}
+	config := config2.NewConfig()
+	if err := config.Load(configFile); err != nil {
+		return fmt.Errorf("error loading configuration file: %w", err)
+	}
+	log := logger.New(config.Logger.Level)
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
 
-	go func() {
-		<-ctx.Done()
+	storage, err := storage2.NewStorage(ctx, config)
+	if err != nil {
+		return fmt.Errorf("error initializing storage: %w", err)
+	}
+	calendar := app.New(log, storage)
+	server := internalhttp.NewServer(log, calendar)
+	go shutDown(ctx, log, server)
+	log.Info("calendar is running...")
+	if err := server.Start(ctx, config); err != nil {
+		return fmt.Errorf("error starting http server: %w", err)
+	}
+	return nil
+}
 
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
-		defer cancel()
-
-		if err := server.Stop(ctx); err != nil {
-			logg.Error("failed to stop http server: " + err.Error())
-		}
-	}()
-
-	logg.Info("calendar is running...")
-
-	if err := server.Start(ctx); err != nil {
-		logg.Error("failed to start http server: " + err.Error())
-		cancel()
-		os.Exit(1) //nolint:gocritic
+func shutDown(ctx context.Context, log *logger.Logger, server *internalhttp.Server) {
+	<-ctx.Done()
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+	if err := server.Stop(shutdownCtx); err != nil {
+		log.Error("failed to stop http server: " + err.Error())
 	}
 }

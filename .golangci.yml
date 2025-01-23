@@ -17,6 +17,13 @@ issues:
         - dupl
         - gocyclo
         - gosec
+    - path: /opt/hostedtoolcache/go/.*\.go
+      linters:
+        - typecheck
+    - path: ../../../../go/pkg/mod/.*\.go
+      linters:
+        - typecheck
+
 
 linters:
   disable-all: true
