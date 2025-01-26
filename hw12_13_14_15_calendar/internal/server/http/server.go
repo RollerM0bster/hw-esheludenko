@@ -7,6 +7,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/models"
+	"github.com/go-openapi/runtime/middleware"
+
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/restapi"
+	operations "github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/restapi/operations"
+	"github.com/go-openapi/loads"
+
 	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/config"
 
 	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/app"
@@ -32,16 +39,17 @@ func NewServer(logger *logger.Logger, app *app.App) *Server {
 
 func (s *Server) Start(ctx context.Context, cfg config.Config) error {
 	s.logger.Info("Starting server")
-	mux := http.NewServeMux()
-	mux.HandleFunc("/hello-world", func(w http.ResponseWriter, _ *http.Request) {
-		w.Write([]byte("Hello World"))
-	})
-	handler := loggingMiddleware(mux)
+	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
+	if err != nil {
+		return err
+	}
+	api := operations.NewCalendarAPIAPI(swaggerSpec)
+	api.PostEventsHandler = operations.PostEventsHandlerFunc(s.CreateEventHandler)
+	handler := api.Serve(nil)
 
 	s.server = &http.Server{
-		Addr:              cfg.ServerConfig.Host + ":" + cfg.ServerConfig.Port,
-		Handler:           handler,
-		ReadHeaderTimeout: 10 * time.Second,
+		Addr:    cfg.ServerConfig.Host + ":" + cfg.ServerConfig.Port,
+		Handler: handler,
 	}
 	s.wg.Add(1)
 	go func() {
@@ -55,7 +63,7 @@ func (s *Server) Start(ctx context.Context, cfg config.Config) error {
 	return s.Stop(ctx)
 }
 
-func (s *Server) Stop(_ context.Context) error {
+func (s *Server) Stop(ctx context.Context) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.stopped {
@@ -73,4 +81,20 @@ func (s *Server) Stop(_ context.Context) error {
 	s.wg.Wait()
 	s.logger.Info("Server stopped")
 	return nil
+}
+
+func (s *Server) CreateEventHandler(params operations.PostEventsParams) middleware.Responder {
+	event := models.NewEvent{
+		Description:          params.Body.Description,
+		Title:                params.Body.Title,
+		Start:                params.Body.Start,
+		End:                  params.Body.End,
+		OwnerID:              params.Body.OwnerID,
+		DaysAmountTillNotify: params.Body.DaysAmountTillNotify,
+	}
+	id, err := s.app.CreateEvent(event)
+	if err != nil {
+		return &operations.PostEventsInternalServerError{Payload: &models.Error{Message: err.Error()}}
+	}
+	return &operations.PostEventsCreated{Payload: &models.EventCreated{ID: id}}
 }
