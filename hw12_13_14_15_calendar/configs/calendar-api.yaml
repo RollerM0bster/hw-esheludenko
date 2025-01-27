@@ -35,9 +35,14 @@ paths:
           description: Ошибка
           schema:
             $ref: '#/definitions/Error'
+  /events/{id}:
     put:
       summary: Обновить событие
       parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
         - in: body
           name: body
           required: true
@@ -50,7 +55,6 @@ paths:
           description: Ошибка
           schema:
             $ref: '#/definitions/Error'
-  /events/{id}:
     delete:
       summary: Удалить событие по идентификатору
       parameters:
@@ -58,7 +62,7 @@ paths:
           in: path
           required: true
           description: ID события
-          type: string
+          type: integer
       responses:
         '204':
           description: Успех

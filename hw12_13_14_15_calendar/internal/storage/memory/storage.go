@@ -55,43 +55,43 @@ func (s *Storage) DeleteEventByID(id int64) error {
 	return nil
 }
 
-func (s *Storage) FindEventsByDay(day time.Time) ([]models.Event, error) {
+func (s *Storage) FindEventsByDay(day time.Time) ([]*models.Event, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	var filteredEvents []models.Event
+	var filteredEvents []*models.Event
 	for _, event := range s.Events {
 		start, _ := time.Parse("1900-01-01", event.Start.String())
 		if start.Year() == day.Year() && start.Month() == day.Month() && start.Day() == day.Day() {
-			filteredEvents = append(filteredEvents, event)
+			filteredEvents = append(filteredEvents, &event)
 		}
 	}
 	return filteredEvents, nil
 }
 
-func (s *Storage) FindEventsByWeek(day time.Time) ([]models.Event, error) {
+func (s *Storage) FindEventsByWeek(day time.Time) ([]*models.Event, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	var filteredEvents []models.Event
+	var filteredEvents []*models.Event
 	year, week := day.ISOWeek()
 	for _, event := range s.Events {
 		start, _ := time.Parse("1900-01-01", event.Start.String())
 		eYear, eWeek := start.ISOWeek()
 		if eYear == year && eWeek == week {
-			filteredEvents = append(filteredEvents, event)
+			filteredEvents = append(filteredEvents, &event)
 		}
 	}
 	return filteredEvents, nil
 }
 
-func (s *Storage) FindEventsByMonth(day time.Time) ([]models.Event, error) {
+func (s *Storage) FindEventsByMonth(day time.Time) ([]*models.Event, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	var filteredEvents []models.Event
+	var filteredEvents []*models.Event
 	for _, event := range s.Events {
 		start, _ := time.Parse("1900-01-01", event.Start.String())
 		if start.Year() == day.Year() && start.Month() == day.Month() {
-			filteredEvents = append(filteredEvents, event)
+			filteredEvents = append(filteredEvents, &event)
 		}
 	}
 	return filteredEvents, nil
