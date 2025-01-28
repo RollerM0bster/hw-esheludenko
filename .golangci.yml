@@ -11,6 +11,21 @@ linters-settings:
 
 issues:
   exclude-rules:
+    - path: ".*swagger.*"
+      linters:
+        - glint
+        - revive
+        - lll
+    - path: ".*restapi.*"
+      linters:
+        - glint
+        - revive
+        - lll
+    - path: ".*models.*"
+      linters:
+        - glint
+        - revive
+        - lll
     - path: _test\.go
       linters:
         - errcheck
