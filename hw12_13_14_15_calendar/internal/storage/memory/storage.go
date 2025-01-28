@@ -61,9 +61,10 @@ func (s *Storage) FindEventsByDay(day time.Time) ([]*models.Event, error) {
 
 	var filteredEvents []*models.Event
 	for _, event := range s.Events {
-		start, _ := time.Parse("1900-01-01", event.Start.String())
+		ev := event
+		start, _ := time.Parse("2006-01-02", event.Start.String())
 		if start.Year() == day.Year() && start.Month() == day.Month() && start.Day() == day.Day() {
-			filteredEvents = append(filteredEvents, &event)
+			filteredEvents = append(filteredEvents, &ev)
 		}
 	}
 	return filteredEvents, nil
@@ -75,10 +76,11 @@ func (s *Storage) FindEventsByWeek(day time.Time) ([]*models.Event, error) {
 	var filteredEvents []*models.Event
 	year, week := day.ISOWeek()
 	for _, event := range s.Events {
-		start, _ := time.Parse("1900-01-01", event.Start.String())
+		ev := event
+		start, _ := time.Parse("2006-01-02", event.Start.String())
 		eYear, eWeek := start.ISOWeek()
 		if eYear == year && eWeek == week {
-			filteredEvents = append(filteredEvents, &event)
+			filteredEvents = append(filteredEvents, &ev)
 		}
 	}
 	return filteredEvents, nil
@@ -89,9 +91,10 @@ func (s *Storage) FindEventsByMonth(day time.Time) ([]*models.Event, error) {
 	defer s.mu.RUnlock()
 	var filteredEvents []*models.Event
 	for _, event := range s.Events {
-		start, _ := time.Parse("1900-01-01", event.Start.String())
+		ev := event
+		start, _ := time.Parse("2006-01-02", event.Start.String())
 		if start.Year() == day.Year() && start.Month() == day.Month() {
-			filteredEvents = append(filteredEvents, &event)
+			filteredEvents = append(filteredEvents, &ev)
 		}
 	}
 	return filteredEvents, nil

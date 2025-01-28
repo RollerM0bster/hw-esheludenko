@@ -45,7 +45,7 @@ func (s *Server) Start(ctx context.Context, cfg config.Config) error {
 	}
 	api := operations.NewCalendarAPIAPI(swaggerSpec)
 
-	//хендлеры
+	// хендлеры
 	api.PostEventsHandler = operations.PostEventsHandlerFunc(s.CreateEventHandler)
 	api.PutEventsIDHandler = operations.PutEventsIDHandlerFunc(s.UpdateEventHandler)
 	api.DeleteEventsIDHandler = operations.DeleteEventsIDHandlerFunc(s.DeleteEventByIDHandler)
@@ -56,8 +56,9 @@ func (s *Server) Start(ctx context.Context, cfg config.Config) error {
 	handler := api.Serve(nil)
 
 	s.server = &http.Server{
-		Addr:    cfg.ServerConfig.Host + ":" + cfg.ServerConfig.Port,
-		Handler: handler,
+		Addr:              cfg.ServerConfig.Host + ":" + cfg.ServerConfig.Port,
+		Handler:           handler,
+		ReadHeaderTimeout: 10 * time.Second,
 	}
 	s.wg.Add(1)
 	go func() {
@@ -71,7 +72,7 @@ func (s *Server) Start(ctx context.Context, cfg config.Config) error {
 	return s.Stop(ctx)
 }
 
-func (s *Server) Stop(ctx context.Context) error {
+func (s *Server) Stop(_ context.Context) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.stopped {
