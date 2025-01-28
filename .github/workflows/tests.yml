@@ -12,6 +12,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.ref, 'calendar') }}
+    timeout-minutes: 30
     steps:
       - name: Extract branch name
         run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
@@ -24,10 +25,20 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
+      - name: Lint only changed files
+        run: |
+          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.go$')
+          if [ -z "$changed_files" ]; then
+          echo "No Go files changed, skipping linting"
+          exit 0
+          fi
+          golangci-lint run $changed_files
+
+
       - name: Linters
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.57.2
+          version: v1.58.0
           working-directory: ${{ env.BRANCH }}
 
   tests:
