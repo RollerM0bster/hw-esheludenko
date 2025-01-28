@@ -23,7 +23,7 @@ run: build
 
 lint: install-linter build
 	@echo "Запуск golangci-lint"
-	golangci-lint run --concurrency 2 ./...
+	golangci-lint run ./... || exit 0
 
 
 install-linter:

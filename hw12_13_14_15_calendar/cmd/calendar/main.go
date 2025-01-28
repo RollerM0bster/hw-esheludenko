@@ -38,7 +38,7 @@ func main() {
 	config := config2.NewConfig()
 	err := config.Load(configFile)
 	if err != nil {
-		log.Fatalf("Error loading configuration file: %s", err)
+		log.Printf("Error loading configuration file: %s", err)
 		os.Exit(1) //nolint:gocritic
 	}
 	logg := logger.New(config.Logger.Level)
@@ -48,7 +48,9 @@ func main() {
 
 	storage, err := storage2.NewStorage(ctx, config)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Error creating storage: %s", err)
+		cancel()
+		os.Exit(1) //nolint:gocritic
 	}
 	calendar := app.New(logg, storage)
 

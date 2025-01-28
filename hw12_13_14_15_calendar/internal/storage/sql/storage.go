@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/models"
-	_ "github.com/lib/pq"
+	_ "github.com/lib/pq" // Используется для регистрации драйвера postgresql
 )
 
 type Storage struct {
