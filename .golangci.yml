@@ -43,7 +43,44 @@ issues:
 linters:
   disable-all: true
   enable:
-    - govet
+    - asciicheck
+    - dogsled
+    - dupl
+    - bodyclose
+    - durationcheck
+    - errorlint
+    - exhaustive
+    - exportloopref
+    - funlen
+    - gci
+    - gocognit
+    - goconst
     - gocritic
+    - gocyclo
+    - godot
+    - gofmt
+    - goheader
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - importas
+    - ineffassign
+    - lll
+    - makezero
+    - misspell
+    - nestif
+    - nilerr
+    - noctx
+    - prealloc
+    - predeclared
     - revive
-
+    - staticcheck
+    - stylecheck
+    - tagliatelle
+    - thelper
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
