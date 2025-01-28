@@ -12,6 +12,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.ref, 'calendar') }}
+    timeout-minutes: 30
     steps:
       - name: Extract branch name
         run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
