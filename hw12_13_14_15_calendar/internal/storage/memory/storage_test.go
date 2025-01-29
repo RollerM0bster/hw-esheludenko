@@ -158,8 +158,12 @@ func TestStorage_FindEventsByWeek(t *testing.T) {
 }
 
 func TestStorage_FindEventsByMonth(t *testing.T) {
+	// Задаем фиксированную дату для месяца
+	month := time.Date(2024, time.January, 1, 0, 0, 0, 0, time.UTC)
+
 	s := memorystorage.New()
-	month := time.Now()
+
+	// Создаем события
 	event1 := models.NewEvent{
 		Start: strfmt.Date(month),
 		End:   strfmt.Date(month.Add(1 * time.Hour)),
@@ -167,25 +171,36 @@ func TestStorage_FindEventsByMonth(t *testing.T) {
 	}
 	event2 := models.NewEvent{
 		Start: strfmt.Date(month.AddDate(0, 0, 5)),
-		End:   strfmt.Date(month.AddDate(0, 0, 5).Add(2 * time.Hour)),
+		End:   strfmt.Date(month.AddDate(0, 0, 8).Add(2 * time.Hour)),
 		Title: "Event 2",
 	}
 	event3 := models.NewEvent{
-		Start: strfmt.Date(month.AddDate(0, 1, 0)),
-		End:   strfmt.Date(month.AddDate(0, 1, 0).Add(1 * time.Hour)),
+		Start: strfmt.Date(month.AddDate(0, 1, 5)),
+		End:   strfmt.Date(month.AddDate(0, 1, 9).Add(1 * time.Hour)),
 		Title: "Event 3",
 	}
 
+	// Создаем события в хранилище
 	s.CreateEvent(event1)
 	s.CreateEvent(event2)
 	s.CreateEvent(event3)
 
+	// Находим события за месяц
 	events, err := s.FindEventsByMonth(month)
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)
 	}
 
+	// Проверяем количество событий
 	if len(events) != 2 {
 		t.Errorf("expected 2 events, got %d", len(events))
+	}
+
+	// Проверяем правильность найденных событий
+	expectedTitles := []string{"Event 1", "Event 2"}
+	for i, event := range events {
+		if event.Title != expectedTitles[i] {
+			t.Errorf("expected event title %s, got %s", expectedTitles[i], event.Title)
+		}
 	}
 }
