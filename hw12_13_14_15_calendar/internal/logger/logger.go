@@ -35,7 +35,7 @@ func (l *Logger) log(level string, msg string) {
 		return
 	}
 	timestamp := time.Now().Format("2006-01-02 15:04:05")
-	formatted := fmt.Sprintf("%s [%s] %s", timestamp, level, msg)
+	formatted := fmt.Sprintf("%s [%s] %s\n", timestamp, level, msg)
 	_, _ = l.output.WriteString(formatted)
 }
 
