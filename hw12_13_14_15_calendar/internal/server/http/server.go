@@ -7,18 +7,14 @@ import (
 	"sync"
 	"time"
 
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/app"
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/config"
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/logger"
 	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/models"
-	"github.com/go-openapi/runtime/middleware"
-
 	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/restapi"
 	operations "github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/restapi/operations"
 	"github.com/go-openapi/loads"
-
-	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/config"
-
-	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/app"
-
-	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/logger"
+	"github.com/go-openapi/runtime/middleware"
 )
 
 type Server struct {

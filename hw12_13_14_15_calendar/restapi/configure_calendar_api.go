@@ -6,11 +6,10 @@ import (
 	"crypto/tls"
 	"net/http"
 
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/restapi/operations"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-
-	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/restapi/operations"
 )
 
 //go:generate swagger generate server --target ..\..\hw12_13_14_15_calendar --name CalendarAPI --spec ..\configs\calendar-api.yaml --principal interface{}

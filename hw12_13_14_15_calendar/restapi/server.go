@@ -19,12 +19,11 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/restapi/operations"
 	"github.com/go-openapi/runtime/flagext"
 	"github.com/go-openapi/swag"
 	flags "github.com/jessevdk/go-flags"
 	"golang.org/x/net/netutil"
-
-	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/restapi/operations"
 )
 
 const (

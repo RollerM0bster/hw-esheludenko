@@ -8,9 +8,8 @@ package operations
 import (
 	"net/http"
 
-	"github.com/go-openapi/runtime"
-
 	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/models"
+	"github.com/go-openapi/runtime"
 )
 
 // PostEventsCreatedCode is the HTTP code returned for type PostEventsCreated

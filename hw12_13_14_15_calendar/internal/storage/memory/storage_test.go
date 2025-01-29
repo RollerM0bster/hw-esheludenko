@@ -2,13 +2,13 @@ package storage_test
 
 import (
 	"errors"
-	"github.com/go-openapi/strfmt"
 	"reflect"
 	"testing"
 	"time"
 
 	memorystorage "github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/storage/memory"
 	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/models"
+	"github.com/go-openapi/strfmt"
 )
 
 func TestStorage_CreateEvent(t *testing.T) {

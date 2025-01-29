@@ -1,14 +1,15 @@
 package internalhttp
 
 import (
+	"testing"
+	"time"
+
 	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/models"
 	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/restapi/operations"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"testing"
-	"time"
 )
 
 type MockApp struct {

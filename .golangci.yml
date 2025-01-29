@@ -21,6 +21,7 @@ issues:
         - glint
         - revive
         - lll
+        - gci
     - path: ".*models.*"
       linters:
         - glint

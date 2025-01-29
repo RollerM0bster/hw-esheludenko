@@ -9,13 +9,11 @@ import (
 	"syscall"
 	"time"
 
-	storage2 "github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/storage"
-
-	config2 "github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/config"
-
 	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/app"
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/config"
 	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/logger"
 	internalhttp "github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/server/http"
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/storage"
 )
 
 var configFile string
@@ -35,7 +33,7 @@ func main() {
 	if configFile == "" {
 		log.Fatal("Missing configuration file")
 	}
-	config := config2.NewConfig()
+	config := config.NewConfig()
 	err := config.Load(configFile)
 	if err != nil {
 		log.Printf("Error loading configuration file: %s", err)
@@ -46,7 +44,7 @@ func main() {
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
 
-	storage, err := storage2.NewStorage(ctx, config)
+	storage, err := storage.NewStorage(ctx, config)
 	if err != nil {
 		log.Printf("Error creating storage: %s", err)
 		cancel()

@@ -9,14 +9,13 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/models"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-
-	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/models"
 )
 
 // NewPutEventsIDParams creates a new PutEventsIDParams object

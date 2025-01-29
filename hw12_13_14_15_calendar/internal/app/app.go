@@ -1,11 +1,11 @@
 package app
 
 import (
-	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/models"
 	"time"
 
 	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/logger"
 	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/internal/storage"
+	"github.com/RollerM0bster/hw-esheludenko/hw12_13_14_15_calendar/models"
 )
 
 type App struct {
