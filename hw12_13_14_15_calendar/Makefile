@@ -23,16 +23,11 @@ run: build
 
 lint: install-linter build
 	@echo "Запуск golangci-lint"
-	golangci-lint run ./... || exit 0
+	golangci-lint run --concurrency 1 ./...
 
 
 install-linter:
-	@if ! command -v $(LINTER) &> /dev/null; then \
-		echo "Установка golangci-lint..."; \
-		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOBIN) v1.51.2; \
-	else \
-		echo "golangci-lint уже установлен."; \
-	fi
+	(which golangci-lint > /dev/null) || curl -sSfl https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b GOBIN v1.60.1
 
 
 # Run tests with race detector
