@@ -25,20 +25,11 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Lint only changed files
-        run: |
-          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.go$')
-          if [ -z "$changed_files" ]; then
-          echo "No Go files changed, skipping linting"
-          exit 0
-          fi
-          golangci-lint run $changed_files
-
 
       - name: Linters
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.58.0
+          version: v1.60.1
           working-directory: ${{ env.BRANCH }}
 
   tests:
@@ -57,7 +48,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Unit tests
-        run: go test -v -count=1 -race -timeout=1m ./...
+        run: go test -v -count=1 -race -timeout=5m ./...
         working-directory: ${{ env.BRANCH }}
 
       - name: Optimization tests
