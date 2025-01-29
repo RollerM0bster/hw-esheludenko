@@ -27,7 +27,7 @@ lint: install-linter build
 
 
 install-linter:
-	(which golangci-lint > /dev/null) || curl -sSfl https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b GOBIN v1.60.1
+	(which golangci-lint > /dev/null) || curl -sSfl https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.60.1
 
 
 # Run tests with race detector
