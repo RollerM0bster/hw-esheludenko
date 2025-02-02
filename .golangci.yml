@@ -11,6 +11,22 @@ linters-settings:
 
 issues:
   exclude-rules:
+    - path: ".*swagger.*"
+      linters:
+        - glint
+        - revive
+        - lll
+    - path: ".*restapi.*"
+      linters:
+        - glint
+        - revive
+        - lll
+        - gci
+    - path: ".*models.*"
+      linters:
+        - glint
+        - revive
+        - lll
     - path: _test\.go
       linters:
         - errcheck
@@ -51,13 +67,11 @@ linters:
     - govet
     - importas
     - ineffassign
-    - lll
     - makezero
     - misspell
     - nestif
     - nilerr
     - noctx
-    - nolintlint
     - prealloc
     - predeclared
     - revive

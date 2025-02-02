@@ -1,4 +1,4 @@
-storage_type: memory
+storage_type: sql
 logging:
   log_level: INFO
 
